@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Detection</title>
+    <style>
+        /* Import Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        /* Global Styles */
+        body {
+            /* font-family: 'Poppins', sans-serif; */
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1250px;
+            margin: 10px auto;
+            padding: 50px;
+            padding-top: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        /* Menu Icon */
+        .menu {
+            position: absolute;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 10px;
+            right: 20px;
+            top: 0%;
+        }
+
+        /* Dropdown */
+        .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background: #333;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            min-width: max-content; /* Expands width to fit content */
+            max-width: 300px; /* Prevents it from becoming too wide */
+            text-align: left;
+            word-wrap: break-word;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Show Dropdown on Hover */
+        .menu:hover .dropdown {
+            display: block;
+        }
+
+        .dropdown a,
+        .dropdown p {
+            font-size: 12px;
+            /* Change this for better readability */
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: left;
+        }
+
+        /* Adjust icon size */
+        .dropdown i {
+            font-size: 10px;
+        }
+
+        .dropdown a:hover {
+            text-decoration: underline;
+        }
+
+        /* Headings */
+        h1 {
+            font-size: 25px;
+            /* Bigger and more prominent */
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            background: linear-gradient(100deg, #007bff, #ff416c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            font-size: 30px;
+            color: #007bff;
+            text-align: center;
+            text-transform: capitalize;
+            text-shadow: 1px 1px 3px rgba(216, 11, 11, 0.1);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0px;
+        }
+
+        /* Paragraph */
+        p {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* Steps Section */
+        .step {
+            background: #e3f2fd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            text-align: left;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .step:hover {
+            transform: scale(1.02);
+        }
+
+        .step-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #007bff;
+            text-transform: uppercase;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 14px 24px;
+            font-size: 18px;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: 0.3s ease-in-out;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1px;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+        }
+
+        .start-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #003d80);
+            transform: scale(1.05);
+        }
+
+        .train-btn {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+        }
+
+        .train-btn:hover {
+            background: linear-gradient(135deg, #1e7e34, #145c24);
+            transform: scale(1.05);
+        }
+
+        /* Code Box */
+        .code-box {
+            background: #222;
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            padding: 18px;
+            border-radius: 10px;
+            text-align: left;
+            overflow-x: auto;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Button Animation */
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            font-weight: 500;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+                color: #007bff;
+                font-size: 24px;
+                margin-top: 20px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        Sign Language Detection Project
+        <div class="menu">
+            ☰
+            <div class="dropdown">
+                <p>📞9370134060</p>
+                <p>📧tawasevishal2003@email.com</p>
+                <p>🔗 <a href="https://www.linkedin.com/in/vishal-tawase-034418226/" target="_blank">LinkedIn</a></p>
+                <p>🔗 <a href="https://github.com/VishalTawase/Sign-Language-Detection" target="_blank">GitHub Link</a></p>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="container">
+        <h1>Welcome to Sign Language Detection</h1>
+        <p>
+            This project uses <strong>computer vision</strong> and <strong>machine learning</strong> to detect
+            hand signs in real-time. The system leverages <em>OpenCV</em> and <em>TensorFlow</em> to
+            recognize and classify different gestures with high accuracy.
+        </p>
+
+
+        <h2>Project Steps</h2>
+
+        <div class="step">
+            <span class="step-title">Step 1: Data Collection - Capturing Hand Gestures for Sign Language
+                Detection</span>
+            <p>
+                This step focuses on gathering a comprehensive dataset of hand gestures, which is crucial for training
+                our sign language detection model. We utilize OpenCV, a powerful library for computer vision, to capture
+                real-time video from your webcam. The <code>cvzone.HandTrackingModule</code> is employed to detect and
+                track hand movements within the video frames.
+            </p>
+
+            <button id="detailsButton">Show Detailed Explanation of dataCollection.py</button>
+
+            <div id="detailsContent" style="display: none;">
+                <h3>Detailed Explanation of the <code>dataCollection.py</code> Script:</h3>
+                <p>
+                    The Python script <code>dataCollection.py</code> performs the following key operations:
+                </p>
+                <ol>
+                    <li>
+                        <strong>Webcam Initialization:</strong>
+                        <p>
+                            The script starts by initializing the webcam using <code>cv2.VideoCapture(0)</code>. This
+                            opens the default camera (index 0) and prepares to capture video frames.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Hand Detection Setup:</strong>
+                        <p>
+                            A <code>HandDetector</code> object from the <code>cvzone</code> library is created with
+                            <code>maxHands=1</code>, indicating that we are tracking only one hand at a time. This
+                            detector will locate and provide bounding box information for the hand.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Image Processing Parameters:</strong>
+                        <p>
+                            Several parameters are defined:
+                        <ul>
+                            <li><code>offset = 20</code>: This adds a margin around the hand's bounding box to ensure
+                                the entire hand is captured.</li>
+                            <li><code>imgSize = 300</code>: This sets the desired size (in pixels) for the processed
+                                hand images, ensuring uniformity in the dataset.</li>
+                            <li><code>counter = 0</code>: This variable tracks the number of images captured for each
+                                gesture.</li>
+                            <li><code>folder = "User path\\Sign language detection\\Data\\Hello"</code>:
+                                This specifies the directory where the captured images will be saved. Make sure to
+                                replace this with the correct path corresponding to the gesture being captured. For
+                                example, if you are capturing the "Hello" gesture, you should point to the "Hello"
+                                folder inside the Data directory.</li>
+                        </ul>
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Main Loop and Hand Detection:</strong>
+                        <p>
+                            The <code>while True</code> loop continuously captures frames from the webcam. The
+                            <code>detector.findHands(img)</code> function detects hands in each frame, returning the
+                            hand data and the modified image.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Hand Bounding Box and Image Cropping:</strong>
+                        <p>
+                            If a hand is detected, the script extracts the bounding box coordinates (<code>x</code>,
+                            <code>y</code>, <code>w</code>, <code>h</code>) and crops the hand region from the original
+                            image with the added offset.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Image Resizing and Padding:</strong>
+                        <p>
+                            To ensure all hand images have the same size, the script resizes and pads the cropped image.
+                            It calculates the aspect ratio of the hand and resizes the image accordingly. Then, it
+                            creates a white canvas (<code>imgWhite</code>) of the desired size and places the resized
+                            hand image in the center, padding the remaining areas with white pixels. This ensures
+                            consistent input for the model.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Displaying Images:</strong>
+                        <p>
+                            The script displays the cropped hand image (<code>ImageCrop</code>) and the padded, resized
+                            image (<code>ImageWhite</code>) using <code>cv2.imshow()</code>. It also shows the original
+                            webcam feed (<code>Image</code>).
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Saving Images:</strong>
+                        <p>
+                            When the user presses the 'S' key, the <code>imgWhite</code> image is saved to the specified
+                            folder with a unique filename (<code>Image_{time.time()}.jpg</code>). The
+                            <code>counter</code> is incremented, and the current count is printed to the console.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Loop Continuation:</strong>
+                        <p>
+                            The <code>cv2.waitKey(1)</code> function waits for a key press for 1 millisecond. If no key
+                            is pressed, the loop continues to the next frame.
+                        </p>
+                    </li>
+                </ol>
+
+                <p>
+                    <strong>Important Note:</strong>
+                    Before running the script, ensure you have the necessary libraries installed (OpenCV and cvzone).
+                    Also, adjust the <code>folder</code> variable to match the correct directory for each gesture you
+                    want to capture.
+                </p>
+            </div>
+
+            <p>
+                👉 Press <b>'S'</b> while running the <code>dataCollection.py</code> script to save an image of the
+                current hand gesture. Capture multiple images for each gesture to create a robust dataset.
+            </p>
+
+            <h3>Project Folder Structure:</h3>
+            <div class="code-box">
+                <pre>
+    Signlanguagedetection/
+    │── Data/
+    │   ├── Hello/
+    │   ├── No/
+    │   ├── Okay/
+    │   ├── Please/
+    │   ├── Thank you/
+    │   ├── Yes/
+    │── Model/
+    │   ├── keras_model.h5
+    │   ├── labels.txt
+    │── dataCollection.py
+    │── test.py
+    │── pyvenv.cfg
+            </pre>
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('detailsButton').addEventListener('click', function () {
+                var detailsContent = document.getElementById('detailsContent');
+                if (detailsContent.style.display === 'none') {
+                    detailsContent.style.display = 'block';
+                    this.textContent = 'Hide Detailed Explanation of dataCollection.py';
+                } else {
+                    detailsContent.style.display = 'none';
+                    this.textContent = 'Show Detailed Explanation of dataCollection.py';
+                }
+            });
+        </script>
+
+
+        <div class="step">
+            <span class="step-title">Step 2: Preprocessing</span>
+            <p>The collected images are cropped and resized to a fixed size (300x300 pixels). This ensures uniform input
+                for the model.</p>
+            <p>Images are converted to grayscale or normalized for better training results.</p>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Step 3: Model Training</span>
+            <p>We use a machine learning model (TensorFlow/Keras) to classify hand signs. The model learns patterns from
+                the processed images.</p>
+            <p>Train the model using Google's <b>Teachable Machine</b> for a user-friendly training experience.</p>
+            <a href="https://teachablemachine.withgoogle.com/train/image" class="btn train-btn" target="_blank">Train
+                Your Model</a>
+        </div>
+
+        <div class="step">
+            <span class="step-title">Step 4: Real-Time Detection - Interpreting Hand Gestures with the Trained
+                Model</span>
+            <p>
+                This step focuses on using the trained model to perform real-time sign language detection. We leverage
+                OpenCV for capturing live video from the webcam, and the <code>cvzone</code> library for hand tracking
+                and gesture classification. The trained Keras model (<code>keras_model.h5</code>) and its corresponding
+                labels (<code>labels.txt</code>) are loaded to recognize the hand gestures in real time.
+            </p>
+
+            <button id="testDetailsButton">Show Detailed Explanation of test.py</button>
+
+            <div id="testDetailsContent" style="display: none;">
+                <h3>Detailed Explanation of the <code>test.py</code> Script:</h3>
+                <p>
+                    The Python script <code>test.py</code> performs the following key operations:
+                </p>
+                <ol>
+                    <li>
+                        <strong>Initialization:</strong>
+                        <p>
+                            The script initializes the webcam using <code>cv2.VideoCapture(0)</code>, creates a
+                            <code>HandDetector</code> object for hand tracking, and a <code>Classifier</code> object to
+                            load the trained model and labels.
+                        </p>
+                        <p>
+                            <code>classifier = Classifier("User path\\Signlanguagedetection\\Model\\keras_model.h5", "User path\\Signlanguagedetection\\Model\\labels.txt")</code>
+                            loads the trained model.
+                        </p>
+                        <p>
+                            <code>labels = ["Hello","Okay","Please","Thank you","Yes","No"]</code> defines the list of
+                            labels corresponding to the model's output.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Main Loop and Hand Detection:</strong>
+                        <p>
+                            The <code>while True</code> loop continuously captures frames from the webcam.
+                            <code>detector.findHands(img)</code> detects hands in each frame.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Hand Processing:</strong>
+                        <p>
+                            If a hand is detected, the script extracts the bounding box (<code>x</code>, <code>y</code>,
+                            <code>w</code>, <code>h</code>) and crops the hand region with an offset.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Image Resizing and Padding:</strong>
+                        <p>
+                            Similar to the data collection script, the cropped hand image is resized and padded to a
+                            uniform size (<code>imgSize</code> = 300x300 pixels) on a white background. This ensures
+                            consistent input for the model.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Classification:</strong>
+                        <p>
+                            <code>prediction, index = classifier.getPrediction(imgWhite, draw=False)</code> uses the
+                            trained model to predict the hand gesture. The <code>index</code> corresponds to the
+                            predicted label, and <code>prediction</code> contains the probabilities of each class.
+                        </p>
+                        <p>
+                            <code>print(prediction, index)</code> displays the prediction results in the console.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Displaying Results:</strong>
+                        <p>
+                            <code>cv2.rectangle(imgOutput,(x-offset,y-offset-70),(x -offset+400, y - offset+60-50),(0,255,0),cv2.FILLED)</code>
+                            displays a filled rectangle to hold the predicted label.
+                        </p>
+                        <p>
+                            <code>cv2.putText(imgOutput,labels[index],(x,y-30),cv2.FONT_HERSHEY_COMPLEX,2,(0,0,0),2)</code>
+                            displays the predicted label text on the image.
+                        </p>
+                        <p>
+                            <code>cv2.rectangle(imgOutput,(x-offset,y-offset),(x + w + offset, y+h + offset),(0,255,0),4)</code>
+                            draws a rectangle around the detected hand.
+                        </p>
+                        <p>
+                            <code>cv2.imshow('ImageCrop', imgCrop)</code> and
+                            <code>cv2.imshow('ImageWhite', imgWhite)</code> display the cropped and processed hand
+                            images.
+                        </p>
+                        <p>
+                            <code>cv2.imshow('Image', imgOutput)</code> displays the original webcam feed with the
+                            detected hand and predicted label.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Loop Continuation:</strong>
+                        <p>
+                            <code>cv2.waitKey(1)</code> waits for a key press for 1 millisecond, allowing the loop to
+                            continue.
+                        </p>
+                    </li>
+                </ol>
+
+                <p>
+                    <strong>Important Note:</strong>
+                    Ensure that the paths to <code>keras_model.h5</code> and <code>labels.txt</code> are correct. The
+                    <code>cvzone</code> library and OpenCV must be installed.
+                </p>
+            </div>
+
+            <p>
+                The recognized sign is displayed along with its meaning and an image representation in real-time.
+            </p>
+        </div>
+
+        <script>
+            document.getElementById('testDetailsButton').addEventListener('click', function () {
+                var testDetailsContent = document.getElementById('testDetailsContent');
+                if (testDetailsContent.style.display === 'none') {
+                    testDetailsContent.style.display = 'block';
+                    this.textContent = 'Hide Detailed Explanation of test.py';
+                } else {
+                    testDetailsContent.style.display = 'none';
+                    this.textContent = 'Show Detailed Explanation of test.py';
+                }
+            });
+        </script>
+
+        <a href="{{ url_for('index') }}" class="btn start-btn">Start Demo</a>
+    </div>
+
+    <footer style="margin-top: 20px; padding: 10px; background: #007bff; color: white; text-align: center;">
+        &copy; 2025 Sign Language Detection | Developed by Vishal Tawase
+    </footer>
+
+</body>
+
+</html>
