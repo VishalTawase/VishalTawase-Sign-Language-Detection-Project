@@ -4,3 +4,4 @@ numpy
 cvzone
 tensorflow
 gunicorn
+mediapipe
