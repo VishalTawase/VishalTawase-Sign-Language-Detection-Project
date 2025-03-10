@@ -472,3 +472,5 @@ if __name__ == "__main__":
     open_browser()  # Open browser only once
     app.run(debug=True)
 
+
+
